@@ -1,9 +1,8 @@
-import HttpStatusCodes from '@src/common/HttpStatusCodes';
+import HttpStatusCodes from "@src/common/HttpStatusCodes";
 
-import UserService from '@src/services/UserService';
-import { IUser } from '@src/models/User';
-import { IReq, IRes } from './types/express/misc';
-
+import UserService from "@src/services/UserService";
+import { IUser } from "@src/models/User";
+import { IReq, IRes } from "./types/express/misc";
 
 // **** Functions **** //
 
@@ -12,13 +11,13 @@ import { IReq, IRes } from './types/express/misc';
  */
 async function getAll(_: IReq, res: IRes) {
   const users = await UserService.getAll();
-  return res.status(HttpStatusCodes.OK).json({ users });
+  return res.status(HttpStatusCodes.OK).json(users);
 }
 
 /**
  * Add one user.
  */
-async function add(req: IReq<{user: IUser}>, res: IRes) {
+async function add(req: IReq<{ user: IUser }>, res: IRes) {
   const { user } = req.body;
   await UserService.addOne(user);
   return res.status(HttpStatusCodes.CREATED).end();
@@ -27,7 +26,7 @@ async function add(req: IReq<{user: IUser}>, res: IRes) {
 /**
  * Update one user.
  */
-async function update(req: IReq<{user: IUser}>, res: IRes) {
+async function update(req: IReq<{ user: IUser }>, res: IRes) {
   const { user } = req.body;
   await UserService.updateOne(user);
   return res.status(HttpStatusCodes.OK).end();
@@ -41,7 +40,6 @@ async function delete_(req: IReq, res: IRes) {
   await UserService.delete(id);
   return res.status(HttpStatusCodes.OK).end();
 }
-
 
 // **** Export default **** //
 

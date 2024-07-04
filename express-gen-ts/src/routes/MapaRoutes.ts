@@ -11,8 +11,8 @@ import { IReq, IRes } from './types/express/misc';
  * Get all users.
  */
 async function getAll(_: IReq, res: IRes) {
-  const users = await MapaService.getAll();
-  return res.status(HttpStatusCodes.OK).json({ users });
+  const mapas = await MapaService.getAll();
+  return res.status(HttpStatusCodes.OK).json(mapas);
 }
 
 /**

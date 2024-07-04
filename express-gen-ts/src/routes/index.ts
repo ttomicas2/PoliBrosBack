@@ -1,51 +1,69 @@
-import { Router } from 'express';
-import jetValidator from 'jet-validator';
+import { Router } from "express";
+import jetValidator from "jet-validator";
 
-import Paths from '../common/Paths';
-import User from '@src/models/User';
-import UserRoutes from './UserRoutes';
-
+import Paths from "../common/Paths";
+import User from "@src/models/User";
+import UserRoutes from "./UserRoutes";
+import Mapa from "@src/models/Mapa";
+import MapaRoutes from "./MapaRoutes";
 
 // **** Variables **** //
 
 const apiRouter = Router(),
   validate = jetValidator();
 
-
 // ** Add UserRouter ** //
 
 const userRouter = Router();
+const mapaRouter = Router();
 
 // Get all users
-userRouter.get(
-  Paths.Users.Get,
-  UserRoutes.getAll,
-);
+userRouter.get(Paths.Users.Get, UserRoutes.getAll);
+
+mapaRouter.get(Paths.Mapas.Get, MapaRoutes.getAll);
 
 // Add one user
 userRouter.post(
   Paths.Users.Add,
-  validate(['user', User.isUser]),
-  UserRoutes.add,
+  validate(["user", User.isUser]),
+  UserRoutes.add
+);
+
+mapaRouter.post(
+  Paths.Mapas.Add,
+  validate(["mapa", Mapa.isMapa]),
+  MapaRoutes.add
 );
 
 // Update one user
 userRouter.put(
   Paths.Users.Update,
-  validate(['user', User.isUser]),
-  UserRoutes.update,
+  validate(["user", User.isUser]),
+  UserRoutes.update
+);
+
+mapaRouter.put(
+  Paths.Mapas.Update,
+  validate(["mapa", Mapa.isMapa]),
+  MapaRoutes.update
 );
 
 // Delete one user
 userRouter.delete(
   Paths.Users.Delete,
-  validate(['id', 'number', 'params']),
-  UserRoutes.delete,
+  validate(["id", "number", "params"]),
+  UserRoutes.delete
+);
+
+mapaRouter.delete(
+  Paths.Mapas.Add,
+  validate(["id", "number", "params"]),
+  MapaRoutes.delete
 );
 
 // Add UserRouter
 apiRouter.use(Paths.Users.Base, userRouter);
-
+apiRouter.use(Paths.Mapas.Base, mapaRouter);
 
 // **** Export default **** //
 

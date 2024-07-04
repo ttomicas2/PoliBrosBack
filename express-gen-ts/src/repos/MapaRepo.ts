@@ -1,7 +1,6 @@
-import { IMapa } from '@src/models/Mapa';
-import { getRandomInt } from '@src/util/misc';
-import { mapaModel } from './mongoose';
-
+import { IMapa } from "@src/models/Mapa";
+import { getRandomInt } from "@src/util/misc";
+import { mapaModel } from "./mongoose";
 
 // **** Functions **** //
 
@@ -10,12 +9,15 @@ import { mapaModel } from './mongoose';
  */
 async function getOne(email: string): Promise<IMapa | null> {
   return new Promise((resolve, reject) => {
-    mapaModel.findOne({ email: email }).then((mapa) => {
+    mapaModel
+      .findOne({ email: email })
+      .then((mapa) => {
         resolve(mapa);
-    }).catch((error) => {
+      })
+      .catch((error: any) => {
         console.error("Error al obtener usuario:", error);
         reject(error);
-    });
+      });
   });
 }
 
@@ -25,9 +27,9 @@ async function getOne(email: string): Promise<IMapa | null> {
 async function persists(id: number): Promise<boolean> {
   const exists = await mapaModel.exists({ id: id });
   return new Promise((resolve, reject) => {
-    if(exists != null){
+    if (exists != null) {
       resolve(true);
-    }else{
+    } else {
       reject(false);
     }
   });
@@ -57,10 +59,10 @@ async function add(mapa: IMapa): Promise<void> {
   mapa.id = getRandomInt();
   mapaModel
     .insertMany(mapa)
-    .then((res) => {
+    .then((res: any) => {
       console.log(res);
     })
-    .catch((err) => {
+    .catch((err: any) => {
       console.error(err);
     });
 }
@@ -71,10 +73,10 @@ async function add(mapa: IMapa): Promise<void> {
 async function update(mapa: IMapa): Promise<void> {
   mapaModel
     .replaceOne({ id: mapa.id }, mapa)
-    .then((res) => {
+    .then((res: any) => {
       console.log(res);
     })
-    .catch((err) => {
+    .catch((err: any) => {
       console.error(err);
     });
 }
@@ -85,14 +87,13 @@ async function update(mapa: IMapa): Promise<void> {
 async function delete_(id: number): Promise<void> {
   mapaModel
     .deleteOne({ id: id })
-    .then((res) => {
+    .then((res: any) => {
       console.log(res);
     })
-    .catch((err) => {
+    .catch((err: any) => {
       console.error(err);
     });
 }
-
 
 // **** Export default **** //
 

@@ -49,31 +49,3 @@ const db: Connection = Mongoose.createConnection(
 export const userModel = db.model<IUser>("Users", userSchema);
 export const mapaModel = db.model<IMapa>("Mapas", mapaSchema);
 
-function collectionUser(): Promise<IUser[]> {
-  return new Promise((resolve, reject) => {
-    userModel
-      .find({})
-      .then((data: IUser[]) => {
-        resolve(data); // Resuelve la promesa con los festivales obtenidos
-      })
-      .catch((error: Error) => {
-        console.error("Error al obtener festivales:", error);
-        reject(error); // Rechazar la promesa en caso de error
-      });
-  });
-}
-
-function collectionMapa(): Promise<IMapa[]> {
-    return new Promise((resolve, reject) => {
-      mapaModel
-        .find({})
-        .then((data: IMapa[]) => {
-          resolve(data); // Resuelve la promesa con los festivales obtenidos
-        })
-        .catch((error: Error) => {
-          console.error("Error al obtener festivales:", error);
-          reject(error); // Rechazar la promesa en caso de error
-        });
-    });
-  }
-  

@@ -12,7 +12,7 @@ async function getOne(email: string): Promise<IUser | null> {
   return new Promise((resolve, reject) => {
     userModel.findOne({ email: email }).then((user) => {
         resolve(user);
-    }).catch((error) => {
+    }).catch((error: any) => {
         console.error("Error al obtener usuario:", error);
         reject(error);
     });
@@ -57,10 +57,10 @@ async function add(user: IUser): Promise<void> {
   user.id = getRandomInt();
   userModel
     .insertMany(user)
-    .then((res) => {
+    .then((res: any) => {
       console.log(res);
     })
-    .catch((err) => {
+    .catch((err: any) => {
       console.error(err);
     });
 }
@@ -71,10 +71,10 @@ async function add(user: IUser): Promise<void> {
 async function update(user: IUser): Promise<void> {
   userModel
     .replaceOne({ id: user.id }, user)
-    .then((res) => {
+    .then((res: any) => {
       console.log(res);
     })
-    .catch((err) => {
+    .catch((err: any) => {
       console.error(err);
     });
 }
@@ -85,10 +85,10 @@ async function update(user: IUser): Promise<void> {
 async function delete_(id: number): Promise<void> {
   userModel
     .deleteOne({ id: id })
-    .then((res) => {
+    .then((res: any) => {
       console.log(res);
     })
-    .catch((err) => {
+    .catch((err: any) => {
       console.error(err);
     });
 }
