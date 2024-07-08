@@ -12,6 +12,10 @@ export const USER_NOT_FOUND_ERR = 'User not found';
 
 // **** Functions **** //
 
+
+function logIn(user: IUser): Promise<string> {
+  return UserRepo.logIn(user);
+}
 /**
  * Get all users.
  */
@@ -60,6 +64,7 @@ async function _delete(id: number): Promise<void> {
 // **** Export default **** //
 
 export default {
+  logIn,
   getAll,
   addOne,
   updateOne,

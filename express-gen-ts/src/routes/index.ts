@@ -29,6 +29,12 @@ userRouter.post(
   UserRoutes.add
 );
 
+userRouter.post(
+  Paths.Users.LogIn,
+  validate(["user", User.isUser]),
+  UserRoutes.logIn
+);
+
 mapaRouter.post(
   Paths.Mapas.Add,
   validate(["mapa", Mapa.isMapa]),

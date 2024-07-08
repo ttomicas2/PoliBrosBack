@@ -6,6 +6,12 @@ import { IReq, IRes } from "./types/express/misc";
 
 // **** Functions **** //
 
+async function logIn(req: IReq<{ user: IUser }>, res: IRes) {
+  const { user } = req.body;
+  const token = await UserService.logIn(user);
+  return res.status(HttpStatusCodes.OK).json({ token });
+}
+
 /**
  * Get all users.
  */
@@ -44,6 +50,7 @@ async function delete_(req: IReq, res: IRes) {
 // **** Export default **** //
 
 export default {
+  logIn,
   getAll,
   add,
   update,

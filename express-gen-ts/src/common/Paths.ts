@@ -10,6 +10,7 @@ export default {
     Add: "/",
     Update: "/",
     Delete: "/:id",
+    LogIn: "/login",
   },
   Mapas: {
     Base: "/mapas",

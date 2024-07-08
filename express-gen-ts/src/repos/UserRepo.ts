@@ -1,9 +1,34 @@
 import { IUser } from '@src/models/User';
 import { getRandomInt } from '@src/util/misc';
 import { userModel } from './mongoose';
+import bcrypt from 'bcrypt-ts';
 
-
+import jwt from 'jsonwebtoken';
+import EnvVars from '@src/common/EnvVars';
 // **** Functions **** //
+
+async function logIn(userInput: IUser): Promise<string> {
+  return new Promise((resolve, reject) => {
+    userModel.findOne({ email: userInput.email, username: userInput.username }).then((user : any) => {
+      if(user == null) reject("Usuario no encontrado");
+      bcrypt.compare(userInput.password, user?.password, (result: any) => {
+      if (result) {
+        // Passwords match, authentication successful
+        console.log('Passwords match! User authenticated.');
+        const accessToken = jwt.sign(userInput, EnvVars.Jwt.Secret, { expiresIn: '1h' });
+        resolve(accessToken);
+      } else {
+        // Passwords don't match, authentication failed
+        console.log('Passwords do not match! Authentication failed.');
+        reject("Contraseña incorrecta");
+      }
+      });
+    }).catch((error: any) => {
+      console.error("Error al obtener usuario:", error);
+      reject(error);
+    });
+  });
+}
 
 /**
  * Get one user.
@@ -55,14 +80,21 @@ async function getAll(): Promise<IUser[]> {
  */
 async function add(user: IUser): Promise<void> {
   user.id = getRandomInt();
-  userModel
-    .insertMany(user)
-    .then((res: any) => {
-      console.log(res);
-    })
-    .catch((err: any) => {
-      console.error(err);
+  bcrypt.genSalt(10).then( (salt: any) => {
+    bcrypt.hash(user.password, salt).then((hash: any) => {
+      user.password = hash;
+      userModel
+      .insertMany(user)
+      .then((res: any) => {
+        console.log(res);
+      })
+      .catch((err: any) => {
+        console.error(err);
+      });
+    }).catch((error: any) => {
+      console.error("Error al hashear contraseña:", error);
     });
+  });
 }
 
 /**
@@ -97,6 +129,7 @@ async function delete_(id: number): Promise<void> {
 // **** Export default **** //
 
 export default {
+  logIn,
   getOne,
   persists,
   getAll,

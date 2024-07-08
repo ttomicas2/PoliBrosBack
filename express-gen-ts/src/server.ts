@@ -8,6 +8,9 @@ import path from 'path';
 import helmet from 'helmet';
 import express, { Request, Response, NextFunction } from 'express';
 import logger from 'jet-logger';
+import jwt from 'jsonwebtoken';
+import bodyParser from 'body-parser';
+import { authenticateToken } from './middleware/authenticate';
 
 import 'express-async-errors';
 
@@ -18,6 +21,8 @@ import EnvVars from '@src/common/EnvVars';
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
 import RouteError from '@src/common/RouteError';
 import { NodeEnvs } from '@src/common/misc';
+import { IUser } from './models/User';
+import { IReq } from './routes/types/express/misc';
 
 
 // **** Variables **** //
@@ -84,6 +89,19 @@ app.get('/users', (_: Request, res: Response) => {
   return res.sendFile('users.html', { root: viewsDir });
 });
 
+// app.post('/login', (req: Request, res: Response) => {
+//   // Aquí deberías verificar las credenciales del usuario
+//   const username = req.body.user;
+//   const user = { username: username }; // Puedes incluir más información del usuario aquí
+
+//   const accessToken = jwt.sign(user, 'your_secret_key');
+//   res.json({ accessToken: accessToken });
+// });
+
+// Ruta protegida con JWT
+app.get('/protected', authenticateToken, (req: IReq<{ user: IUser}>, res: Response) => {
+  res.json(req.body.user);
+});
 
 // **** Export default **** //
 
