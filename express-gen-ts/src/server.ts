@@ -10,7 +10,6 @@ import express, { Request, Response, NextFunction } from 'express';
 import logger from 'jet-logger';
 import jwt from 'jsonwebtoken';
 import bodyParser from 'body-parser';
-import { authenticateToken } from './middleware/authenticate';
 
 import 'express-async-errors';
 
@@ -23,6 +22,7 @@ import RouteError from '@src/common/RouteError';
 import { NodeEnvs } from '@src/common/misc';
 import { IUser } from './models/User';
 import { IReq } from './routes/types/express/misc';
+import { verifyToken } from './middleware/authenticate';
 
 
 // **** Variables **** //
@@ -65,6 +65,7 @@ app.use((
   if (err instanceof RouteError) {
     status = err.status;
   }
+  res.header("Access-Control-Allow-Origin", "x-access-token, Origin, Content-Type, Accept");
   return res.status(status).json({ error: err.message });
 });
 
@@ -99,7 +100,7 @@ app.get('/users', (_: Request, res: Response) => {
 // });
 
 // Ruta protegida con JWT
-app.get('/protected', authenticateToken, (req: IReq<{ user: IUser}>, res: Response) => {
+app.get('/protected', verifyToken, (req: IReq<{ user: IUser}>, res: Response) => {
   res.json(req.body.user);
 });
 

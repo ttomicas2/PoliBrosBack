@@ -66,5 +66,5 @@ function isUser(arg: unknown): boolean {
 export default {
   new: new_,
   from,
-  isUser,
+    isUser,
 } as const;

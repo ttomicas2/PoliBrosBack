@@ -6,6 +6,9 @@ import User from "@src/models/User";
 import UserRoutes from "./UserRoutes";
 import Mapa from "@src/models/Mapa";
 import MapaRoutes from "./MapaRoutes";
+import UserRepo from "@src/repos/UserRepo";
+import { verifyToken } from "@src/middleware/authenticate";
+
 
 // **** Variables **** //
 
