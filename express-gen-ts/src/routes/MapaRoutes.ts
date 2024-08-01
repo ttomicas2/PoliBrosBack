@@ -15,6 +15,11 @@ async function getAll(_: IReq, res: IRes) {
   return res.status(HttpStatusCodes.OK).json(mapas);
 }
 
+async function getAllFromCreator(req: IReq<{email: string}>, res: IRes) {
+  const {email} = req.body;
+  const mapas = await MapaService.getAllFromCreator(email);
+  return res.status(HttpStatusCodes.OK).json(email);
+}
 /**
  * Add one mapa.
  */

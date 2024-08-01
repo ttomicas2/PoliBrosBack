@@ -1,33 +1,38 @@
-import { IUser } from '@src/models/User';
-import { getRandomInt } from '@src/util/misc';
-import { mapaModel, userModel } from './mongoose';
-import bcrypt from 'bcrypt-ts';
+import { IUser } from "@src/models/User";
+import { getRandomInt } from "@src/util/misc";
+import { mapaModel, userModel } from "./mongoose";
+import bcrypt from "bcrypt";
 
-import jwt from 'jsonwebtoken';
-import EnvVars from '@src/common/EnvVars';
-import { IMapa } from '@src/models/Mapa';
+import jwt from "jsonwebtoken";
+import EnvVars from "@src/common/EnvVars";
+import { IMapa } from "@src/models/Mapa";
 // **** Functions **** //
 
 async function logIn(userInput: IUser): Promise<string> {
   return new Promise((resolve, reject) => {
-    userModel.findOne({ email: userInput.email, username: userInput.username }).then((user : any) => {
-      if(user == null) reject("Usuario no encontrado");
-      bcrypt.compare(userInput.password, user?.password, (result: any) => {
-      if (result) {
-        // Passwords match, authentication successful
-        console.log('Passwords match! User authenticated.');
-        const accessToken = jwt.sign(userInput, EnvVars.Jwt.Secret, { expiresIn: '1h' });
-        resolve(accessToken);
-      } else {
-        // Passwords don't match, authentication failed
-        console.log('Passwords do not match! Authentication failed.');
-        reject("Contraseña incorrecta");
-      }
+    userModel
+      .findOne({ email: userInput.email, username: userInput.username })
+      .then((user: any) => {
+        if (user == null) reject("Usuario no encontrado");
+        bcrypt.compare(userInput.password, user?.password, (result: any) => {
+          if (result) {
+            // Passwords match, authentication successful
+            console.log("Passwords match! User authenticated.");
+            const accessToken = jwt.sign(userInput, EnvVars.Jwt.Secret, {
+              expiresIn: "1h",
+            });
+            resolve(accessToken);
+          } else {
+            // Passwords don't match, authentication failed
+            console.log("Passwords do not match! Authentication failed.");
+            reject("Contraseña incorrecta");
+          }
+        });
+      })
+      .catch((error: any) => {
+        console.error("Error al obtener usuario:", error);
+        reject(error);
       });
-    }).catch((error: any) => {
-      console.error("Error al obtener usuario:", error);
-      reject(error);
-    });
   });
 }
 
@@ -36,12 +41,15 @@ async function logIn(userInput: IUser): Promise<string> {
  */
 async function getOne(email: string): Promise<IUser | null> {
   return new Promise((resolve, reject) => {
-    userModel.findOne({ email: email }).then((user) => {
+    userModel
+      .findOne({ email: email })
+      .then((user: any) => {
         resolve(user);
-    }).catch((error: any) => {
+      })
+      .catch((error: any) => {
         console.error("Error al obtener usuario:", error);
         reject(error);
-    });
+      });
   });
 }
 
@@ -51,9 +59,9 @@ async function getOne(email: string): Promise<IUser | null> {
 async function persists(id: number): Promise<boolean> {
   const exists = await userModel.exists({ id: id });
   return new Promise((resolve, reject) => {
-    if(exists != null){
+    if (exists != null) {
       resolve(true);
-    }else{
+    } else {
       reject(false);
     }
   });
@@ -81,39 +89,48 @@ async function getAll(): Promise<IUser[]> {
  */
 async function add(user: IUser): Promise<void> {
   user.id = getRandomInt();
-  if(await checkDuplicateEmailorUsername(user.email, user.username)){
+  if (await checkDuplicateEmailorUsername(user.email, user.username)) {
     console.error("Usuario ya existe");
     return;
   }
-  bcrypt.genSalt(10).then( (salt: any) => {
-    bcrypt.hash(user.password, salt).then((hash: any) => {
-      user.password = hash;
-      userModel
-      .insertMany(user)
-      .then((res: any) => {
-        console.log(res);
+  bcrypt.genSalt(10).then((salt: any) => {
+    bcrypt
+      .hash(user.password, salt)
+      .then((hash: any) => {
+        user.password = hash;
+        userModel
+          .insertMany(user)
+          .then((res: any) => {
+            console.log(res);
+          })
+          .catch((err: any) => {
+            console.error(err);
+          });
       })
-      .catch((err: any) => {
-        console.error(err);
+      .catch((error: any) => {
+        console.error("Error al hashear contraseña:", error);
       });
-    }).catch((error: any) => {
-      console.error("Error al hashear contraseña:", error);
-    });
   });
 }
 
-async function checkDuplicateEmailorUsername(email: string, username: string): Promise<boolean> {
+async function checkDuplicateEmailorUsername(
+  email: string,
+  username: string
+): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    userModel.findOne({ email: email, username: username }).then((user) => {
-      if(user != null){
-        resolve(true);
-      }else{
-        resolve(false);
-      }
-    }).catch((error: any) => {
-      console.error("Error al obtener usuario:", error);
-      reject(error);
-    });
+    userModel
+      .findOne({ email: email, username: username })
+      .then((user: any) => {
+        if (user != null) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      })
+      .catch((error: any) => {
+        console.error("Error al obtener usuario:", error);
+        reject(error);
+      });
   });
 }
 
@@ -148,7 +165,7 @@ async function delete_(id: number): Promise<void> {
 async function getAllMapas(id: number): Promise<IMapa[]> {
   return new Promise((resolve, reject) => {
     mapaModel
-      .find({"creator.id": id})
+      .find({ "creator.id": id })
       .then((data: IMapa[]) => {
         resolve(data); // Resuelve la promesa con los festivales obtenidos
       })

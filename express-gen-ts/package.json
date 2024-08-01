@@ -14,9 +14,9 @@
     "watch": [
       "src"
     ],
-    "ext": "ts, html",
+    "ext": "ts",
     "ignore": [
-      "src/public"
+      "src/**/*.spec.ts"
     ],
     "exec": "./node_modules/.bin/ts-node --files -r tsconfig-paths/register ./src"
   },
@@ -31,6 +31,7 @@
     "bcrypt-ts": "^5.0.2",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-async-errors": "^3.1.1",
@@ -49,6 +50,7 @@
     "ts-command-line-args": "^2.5.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
@@ -71,6 +73,6 @@
     "supertest": "^7.0.0",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.4"
   }
 }

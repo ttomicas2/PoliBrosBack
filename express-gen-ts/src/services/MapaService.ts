@@ -19,6 +19,10 @@ function getAll(): Promise<IMapa[]> {
   return MapaRepo.getAll();
 }
 
+function getAllFromCreator(emailCreator:string): Promise<IMapa[] | null> {
+  return MapaRepo.getAllFromCreator(emailCreator);
+}
+
 /**
  * Add one mapa.
  */
@@ -61,6 +65,7 @@ async function _delete(id: number): Promise<void> {
 
 export default {
   getAll,
+  getAllFromCreator,
   addOne,
   updateOne,
   delete: _delete,

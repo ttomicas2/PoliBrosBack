@@ -15,6 +15,7 @@ export default {
   Mapas: {
     Base: "/mapas",
     Get: "/",
+    GetFromCreator: "/:email",
     Add: "/",
     Update: "/",
     Delete: "/:id",

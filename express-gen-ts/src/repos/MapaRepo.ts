@@ -1,6 +1,8 @@
 import { IMapa } from "@src/models/Mapa";
 import { getRandomInt } from "@src/util/misc";
 import { mapaModel } from "./mongoose";
+import { resolve } from "path";
+import { rejects } from "assert";
 
 // **** Functions **** //
 
@@ -11,7 +13,7 @@ async function getOne(email: string): Promise<IMapa | null> {
   return new Promise((resolve, reject) => {
     mapaModel
       .findOne({ email: email })
-      .then((mapa) => {
+      .then((mapa: any) => {
         resolve(mapa);
       })
       .catch((error: any) => {
@@ -21,6 +23,18 @@ async function getOne(email: string): Promise<IMapa | null> {
   });
 }
 
+async function getAllFromCreator(email: string): Promise<IMapa[] | null> {
+  return new Promise((resolve, reject) => {
+    mapaModel
+      .find({ "creator.email": email })
+      .then((mapas: any) => {
+        resolve(mapas);
+      })
+      .catch((error: any) => {
+        reject(error);
+      });
+  });
+}
 /**
  * See if a mapa with the given id exists.
  */
@@ -99,6 +113,7 @@ async function delete_(id: number): Promise<void> {
 
 export default {
   getOne,
+  getAllFromCreator,
   persists,
   getAll,
   add,
