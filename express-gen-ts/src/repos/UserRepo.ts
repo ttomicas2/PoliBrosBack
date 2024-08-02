@@ -9,9 +9,19 @@ import { IMapa } from "@src/models/Mapa";
 // **** Functions **** //
 
 async function logIn(userInput: IUser): Promise<string> {
+  let query: any;
+  if(userInput.username != ''){
+    query = {
+      username: userInput.username
+    }
+  }else{
+    query = {
+      email: userInput.email
+    }
+  }
   return new Promise((resolve, reject) => {
     userModel
-      .findOne({ email: userInput.email, username: userInput.username })
+      .findOne(query)
       .then((user: any) => {
         if (user == null) reject("Usuario no encontrado");
         bcrypt.compare(userInput.password, user?.password, (result: any) => {
