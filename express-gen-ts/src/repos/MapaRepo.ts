@@ -50,7 +50,7 @@ async function persists(id: number): Promise<boolean> {
 }
 
 /**
- * Get all users.
+ * Get all mapas.
  */
 async function getAll(): Promise<IMapa[]> {
   return new Promise((resolve, reject) => {

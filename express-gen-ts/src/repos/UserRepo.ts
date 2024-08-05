@@ -24,11 +24,20 @@ async function logIn(userInput: IUser): Promise<string> {
       .findOne(query)
       .then((user: any) => {
         if (user == null) reject("Usuario no encontrado");
-        bcrypt.compare(userInput.password, user?.password, (result: any) => {
+        bcrypt.compare(userInput.password, user?.password, (err: Error | undefined, result: boolean) => {
+          if(err){
+            console.error("Error al obtener usuario:", err);
+            reject(err);
+          }
           if (result) {
             // Passwords match, authentication successful
             console.log("Passwords match! User authenticated.");
-            const accessToken = jwt.sign(userInput, EnvVars.Jwt.Secret, {
+            const payload = {
+              id: user.id,
+              username: user.username,
+              email: user.email,
+            };
+            const accessToken = jwt.sign(payload, EnvVars.Jwt.Secret, {
               expiresIn: "1h",
             });
             resolve(accessToken);
@@ -39,10 +48,6 @@ async function logIn(userInput: IUser): Promise<string> {
           }
         });
       })
-      .catch((error: any) => {
-        console.error("Error al obtener usuario:", error);
-        reject(error);
-      });
   });
 }
 
@@ -103,6 +108,7 @@ async function add(user: IUser): Promise<void> {
     console.error("Usuario ya existe");
     return;
   }
+  console.log(user.password)
   bcrypt.genSalt(10).then((salt: any) => {
     bcrypt
       .hash(user.password, salt)

@@ -40,6 +40,7 @@ userRouter.post(
 
 mapaRouter.post(
   Paths.Mapas.Add,
+  verifyToken,
   validate(["mapa", Mapa.isMapa]),
   MapaRoutes.add
 );
@@ -53,6 +54,7 @@ userRouter.put(
 
 mapaRouter.put(
   Paths.Mapas.Update,
+  verifyToken,
   validate(["mapa", Mapa.isMapa]),
   MapaRoutes.update
 );
@@ -60,12 +62,14 @@ mapaRouter.put(
 // Delete one user
 userRouter.delete(
   Paths.Users.Delete,
+  verifyToken,
   validate(["id", "number", "params"]),
   UserRoutes.delete
 );
 
 mapaRouter.delete(
   Paths.Mapas.Add,
+  verifyToken,
   validate(["id", "number", "params"]),
   MapaRoutes.delete
 );
