@@ -51,6 +51,9 @@ function from(param: object): IUser {
  * See if the param meets criteria to be a user.
  */
 function isUser(arg: unknown): boolean {
+  console.log( "Is user: ",
+       !!arg &&
+    typeof arg === 'object' &&'password' in arg && typeof arg.password === 'string');
   return (
     !!arg &&
     typeof arg === 'object' &&

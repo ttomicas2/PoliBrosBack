@@ -1,6 +1,5 @@
 import { IUser } from './User';
-
-
+import user from './User';
 // **** Variables **** //
 
 const INVALID_CONSTRUCTOR_PARAM = 'nameOrObj arg must a string or an object ' + 
@@ -16,6 +15,7 @@ export interface IMapa {
   photo: string;
   likes: number;
   creator: IUser;
+  categoria: string;
 }
 
 
@@ -30,6 +30,7 @@ function new_(
   photo?: string,
   likes?: number,
   creator?: IUser,
+  categoria?: string,
   id?: number, // id last cause usually set by db
 ): IMapa {
   return {
@@ -38,7 +39,8 @@ function new_(
     photo: (photo ?? ''),
     likes: (likes ?? 0),
     creator: (creator ?? {id: -1, username: '', email: '', password: ''}),
-    valores: (valores ?? [])
+    valores: (valores ?? []),
+    categoria: (categoria ?? ''),
   };
 }
 
@@ -49,14 +51,18 @@ function from(param: object): IMapa {
   if (!isMapa(param)) {
     throw new Error(INVALID_CONSTRUCTOR_PARAM);
   }
+  if('valores' in param && typeof param.valores === 'string'){
+    param.valores = JSON.parse(param.valores);
+  }
   const p = param as IMapa;
-  return new_(p.name, p.valores,p.photo,p.likes, p.creator, p.id);
+  return new_(p.name, p.valores,p.photo,p.likes, p.creator, p.categoria, p.id);
 }
 
 /**
  * See if the param meets criteria to be a user.
  */
 function isMapa(arg: unknown): boolean {
+  console.log( "Is Mapa: ", !!arg && typeof arg === 'object');
   return (
     !!arg &&
     typeof arg === 'object' &&
@@ -64,7 +70,8 @@ function isMapa(arg: unknown): boolean {
     'photo' in arg && typeof arg.photo === 'string' && 
     'name' in arg && typeof arg.name === 'string' &&
     'likes' in arg && typeof arg.likes === 'number' &&
-    'valores' in arg && Array.isArray(arg.valores)
+    'creator' in arg && user.isUser(arg.creator) &&
+    'valores' in arg && typeof arg.valores === 'string'
   );
 }
 
