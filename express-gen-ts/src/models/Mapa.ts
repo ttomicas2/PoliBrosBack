@@ -11,7 +11,7 @@ const INVALID_CONSTRUCTOR_PARAM = 'nameOrObj arg must a string or an object ' +
 export interface IMapa {
   id: number;
   name: string;
-  valores: [];
+  valores: string;
   photo: string;
   likes: number;
   creator: IUser;
@@ -26,7 +26,7 @@ export interface IMapa {
  */
 function new_(
   name?: string,
-  valores?: [],
+  valores?: string,
   photo?: string,
   likes?: number,
   creator?: IUser,
@@ -39,7 +39,7 @@ function new_(
     photo: (photo ?? ''),
     likes: (likes ?? 0),
     creator: (creator ?? {id: -1, username: '', email: '', password: ''}),
-    valores: (valores ?? []),
+    valores: (valores ?? ''),
     categoria: (categoria ?? ''),
   };
 }
@@ -51,9 +51,6 @@ function from(param: object): IMapa {
   if (!isMapa(param)) {
     throw new Error(INVALID_CONSTRUCTOR_PARAM);
   }
-  if('valores' in param && typeof param.valores === 'string'){
-    param.valores = JSON.parse(param.valores);
-  }
   const p = param as IMapa;
   return new_(p.name, p.valores,p.photo,p.likes, p.creator, p.categoria, p.id);
 }
@@ -62,7 +59,6 @@ function from(param: object): IMapa {
  * See if the param meets criteria to be a user.
  */
 function isMapa(arg: unknown): boolean {
-  console.log( "Is Mapa: ", !!arg && typeof arg === 'object');
   return (
     !!arg &&
     typeof arg === 'object' &&

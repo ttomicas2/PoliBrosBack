@@ -24,7 +24,7 @@ const mapaSchema: Schema = new Mongoose.Schema(
     {
         id: { type: Number, required: true },
         name: { type: String, required: true },
-        valores: { type: Array, required: true },
+        valores: { type: String, required: true },
         photo: { type: String, required: true },
         likes: { type: Number, required: true },
         creator: {
@@ -33,6 +33,7 @@ const mapaSchema: Schema = new Mongoose.Schema(
             email: { type: String, required: true },
             password: { type: String, required: true },
         },
+        categoria: { type: String, required: true},
     },
     { collection: "mapas", versionKey: false }
     );

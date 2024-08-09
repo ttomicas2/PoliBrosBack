@@ -16,9 +16,9 @@ async function getAll(_: IReq, res: IRes) {
 }
 
 async function getAllFromCreator(req: IReq<{email: string}>, res: IRes) {
-  const {email} = req.body;
+  const {email} = req.params;
   const mapas = await MapaService.getAllFromCreator(email);
-  return res.status(HttpStatusCodes.OK).json(email);
+  return res.status(HttpStatusCodes.OK).json(mapas);
 }
 /**
  * Add one mapa.
@@ -52,6 +52,7 @@ async function delete_(req: IReq, res: IRes) {
 
 export default {
   getAll,
+  getAllFromCreator,
   add,
   update,
   delete: delete_,
