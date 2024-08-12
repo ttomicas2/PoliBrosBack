@@ -9,15 +9,15 @@ import { rejects } from "assert";
 /**
  * Get one mapa.
  */
-async function getOne(email: string): Promise<IMapa | null> {
+async function getOne(id: number): Promise<IMapa | null> {
   return new Promise((resolve, reject) => {
     mapaModel
-      .findOne({ email: email })
+      .findOne({ id: id })
       .then((mapa: any) => {
         resolve(mapa);
       })
       .catch((error: any) => {
-        console.error("Error al obtener usuario:", error);
+        console.error("Error al obtener el mapa:", error);
         reject(error);
       });
   });

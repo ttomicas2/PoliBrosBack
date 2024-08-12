@@ -103,15 +103,6 @@ app.get("/users", (_: Request, res: Response) => {
 //   res.json({ accessToken: accessToken });
 // });
 
-// Ruta protegida con JWT
-app.get(
-  "/protected",
-  verifyToken,
-  (req: IReq<{ user: IUser }>, res: Response) => {
-    res.json(req.body.user);
-  }
-);
-
 // **** Export default **** //
 
 export default app;

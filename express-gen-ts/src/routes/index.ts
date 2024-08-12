@@ -24,7 +24,9 @@ const mapaRouter = Router();
 userRouter.get(Paths.Users.Get, UserRoutes.getAll);
 
 mapaRouter.get(Paths.Mapas.Get, MapaRoutes.getAll);
-mapaRouter.get(Paths.Mapas.GetFromCreator, verifyToken, MapaRoutes.getAllFromCreator)
+mapaRouter.get(Paths.Mapas.GetFromCreator, verifyToken, MapaRoutes.getAllFromCreator);
+
+mapaRouter.get(Paths.Mapas.GetOne, MapaRoutes.getOne);
 
 // Add one user
 userRouter.post(
