@@ -1,8 +1,6 @@
 import { IMapa } from "@src/models/Mapa";
 import { getRandomInt } from "@src/util/misc";
 import { mapaModel } from "./mongoose";
-import { resolve } from "path";
-import { rejects } from "assert";
 
 // **** Functions **** //
 

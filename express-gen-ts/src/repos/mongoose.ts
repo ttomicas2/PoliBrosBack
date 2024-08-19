@@ -11,32 +11,32 @@ import { IMapa } from "@src/models/Mapa";
 // **** Types **** //
 
 const userSchema: Schema = new Mongoose.Schema(
-    {
-        id: { type: Number, required: true },
-        username: { type: String, required: true },
-        email: { type: String, required: true },
-        password: { type: String, required: true },
-    },
-    { collection: "usuarios", versionKey: false }
-    );
+  {
+    id: { type: Number, required: true },
+    username: { type: String, required: true },
+    email: { type: String, required: true },
+    password: { type: String, required: true },
+  },
+  { collection: "usuarios", versionKey: false }
+);
 
 const mapaSchema: Schema = new Mongoose.Schema(
-    {
-        id: { type: Number, required: true },
-        name: { type: String, required: true },
-        valores: { type: String, required: true },
-        photo: { type: String, required: true },
-        likes: { type: Number, required: true },
-        creator: {
-            id: { type: Number, required: true },
-            username: { type: String, required: true },
-            email: { type: String, required: true },
-            password: { type: String, required: true },
-        },
-        categoria: { type: String, required: true},
+  {
+    id: { type: Number, required: true },
+    name: { type: String, required: true },
+    valores: { type: String, required: true },
+    photo: { type: String, required: true },
+    likes: { type: Number, required: true },
+    creator: {
+      id: { type: Number, required: true },
+      username: { type: String, required: true },
+      email: { type: String, required: true },
+      password: { type: String, required: true },
     },
-    { collection: "mapas", versionKey: false }
-    );
+    categoria: { type: String, required: true },
+  },
+  { collection: "mapas", versionKey: false }
+);
 
 // **** Functions **** //
 
@@ -49,4 +49,3 @@ const db: Connection = Mongoose.createConnection(
 
 export const userModel = db.model<IUser>("Users", userSchema);
 export const mapaModel = db.model<IMapa>("Mapas", mapaSchema);
-

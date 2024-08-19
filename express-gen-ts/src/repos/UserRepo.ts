@@ -10,22 +10,23 @@ import { IMapa } from "@src/models/Mapa";
 
 async function logIn(userInput: IUser): Promise<string> {
   let query: any;
-  if(userInput.username != ''){
+  if (userInput.username != "") {
     query = {
-      username: userInput.username
-    }
-  }else{
+      username: userInput.username,
+    };
+  } else {
     query = {
-      email: userInput.email
-    }
+      email: userInput.email,
+    };
   }
   return new Promise((resolve, reject) => {
-    userModel
-      .findOne(query)
-      .then((user: any) => {
-        if (user == null) reject("Usuario no encontrado");
-        bcrypt.compare(userInput.password, user?.password, (err: Error | undefined, result: boolean) => {
-          if(err){
+    userModel.findOne(query).then((user: any) => {
+      if (user == null) reject("Usuario no encontrado");
+      bcrypt.compare(
+        userInput.password,
+        user?.password,
+        (err: Error | undefined, result: boolean) => {
+          if (err) {
             console.error("Error al obtener usuario:", err);
             reject(err);
           }
@@ -46,8 +47,9 @@ async function logIn(userInput: IUser): Promise<string> {
             console.log("Passwords do not match! Authentication failed.");
             reject("Contraseña incorrecta");
           }
-        });
-      })
+        }
+      );
+    });
   });
 }
 
@@ -104,11 +106,18 @@ async function getAll(): Promise<IUser[]> {
  */
 async function add(user: IUser): Promise<void> {
   user.id = getRandomInt();
-  if (await checkDuplicateEmailorUsername(user.email, user.username)) {
+  if (await checkDuplicateEmail(user.email)) {
+    console.error("Mail ya existe");
+    console.log("Duplicado Mail");
+    return;
+  } else {
+    console.log("No duplicado");
+  }
+  if (await checkUsuarioDuplicate(user.username)) {
     console.error("Usuario ya existe");
     return;
   }
-  console.log(user.password)
+  console.log(user.password);
   bcrypt.genSalt(10).then((salt: any) => {
     bcrypt
       .hash(user.password, salt)
@@ -129,13 +138,28 @@ async function add(user: IUser): Promise<void> {
   });
 }
 
-async function checkDuplicateEmailorUsername(
-  email: string,
-  username: string
-): Promise<boolean> {
+async function checkDuplicateEmail(email: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
     userModel
-      .findOne({ email: email, username: username })
+      .findOne({ email: email })
+      .then((user: any) => {
+        if (user != null) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      })
+      .catch((error: any) => {
+        console.error("Error al obtener usuario:", error);
+        reject(error);
+      });
+  });
+}
+
+async function checkUsuarioDuplicate(username: string): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    userModel
+      .findOne({ username: username })
       .then((user: any) => {
         if (user != null) {
           resolve(true);
@@ -201,6 +225,5 @@ export default {
   getAll,
   add,
   update,
-  checkDuplicateEmailorUsername,
   delete: delete_,
 } as const;
