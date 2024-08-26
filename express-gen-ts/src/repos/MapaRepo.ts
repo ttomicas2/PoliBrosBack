@@ -67,16 +67,20 @@ async function getAll(): Promise<IMapa[]> {
 /**
  * Add one mapa.
  */
-async function add(mapa: IMapa): Promise<void> {
+async function add(mapa: IMapa): Promise<number> {
   mapa.id = getRandomInt();
-  mapaModel
-    .insertMany(mapa)
-    .then((res: any) => {
-      console.log(res);
-    })
-    .catch((err: any) => {
-      console.error(err);
-    });
+  return new Promise((resolve, reject) => {
+    mapaModel
+      .insertMany(mapa)
+      .then((res: any) => {
+        console.log(res);
+        resolve(mapa.id);
+      })
+      .catch((err: any) => {
+        console.error(err);
+        reject(err);
+      });
+  });
 }
 
 /**

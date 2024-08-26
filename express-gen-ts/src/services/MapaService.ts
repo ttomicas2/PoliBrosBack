@@ -31,7 +31,7 @@ function getAllFromCreator(emailCreator:string): Promise<IMapa[] | null> {
 /**
  * Add one mapa.
  */
-function addOne(mapa: IMapa): Promise<void> {
+function addOne(mapa: IMapa): Promise<number> {
   return MapaRepo.add(mapa);
 }
 

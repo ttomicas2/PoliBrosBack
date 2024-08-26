@@ -30,8 +30,8 @@ async function getAllFromCreator(req: IReq<{ email: string }>, res: IRes) {
  */
 async function add(req: IReq<{ mapa: IMapa }>, res: IRes) {
   const { mapa } = req.body;
-  await MapaService.addOne(mapa);
-  return res.status(HttpStatusCodes.CREATED).end();
+  const id = await MapaService.addOne(mapa);
+  return res.status(HttpStatusCodes.CREATED).json(id);
 }
 
 /**

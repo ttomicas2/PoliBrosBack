@@ -9,7 +9,6 @@ import MapaRoutes from "./MapaRoutes";
 import UserRepo from "@src/repos/UserRepo";
 import { verifyToken } from "@src/middleware/authenticate";
 
-
 // **** Variables **** //
 
 const apiRouter = Router(),
@@ -24,7 +23,11 @@ const mapaRouter = Router();
 userRouter.get(Paths.Users.Get, UserRoutes.getAll);
 
 mapaRouter.get(Paths.Mapas.Get, MapaRoutes.getAll);
-mapaRouter.get(Paths.Mapas.GetFromCreator, verifyToken, MapaRoutes.getAllFromCreator);
+mapaRouter.get(
+  Paths.Mapas.GetFromCreator,
+  verifyToken,
+  MapaRoutes.getAllFromCreator
+);
 
 mapaRouter.get(Paths.Mapas.GetOne, MapaRoutes.getOne);
 
@@ -71,7 +74,7 @@ userRouter.delete(
 );
 
 mapaRouter.delete(
-  Paths.Mapas.Add,
+  Paths.Mapas.Delete,
   verifyToken,
   validate(["id", "number", "params"]),
   MapaRoutes.delete
