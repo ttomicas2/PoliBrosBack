@@ -43,6 +43,12 @@ async function update(req: IReq<{ mapa: IMapa }>, res: IRes) {
   return res.status(HttpStatusCodes.OK).end();
 }
 
+async function addVisita(req: IReq<{ mapa: IMapa }>, res: IRes) {
+  const { mapa } = req.body;
+  await MapaService.addVisita(mapa);
+  return res.status(HttpStatusCodes.OK).end();
+}
+
 /**
  * Delete one mapa.
  */
@@ -60,5 +66,6 @@ export default {
   getAllFromCreator,
   add,
   update,
+  addVisita,
   delete: delete_,
 } as const;

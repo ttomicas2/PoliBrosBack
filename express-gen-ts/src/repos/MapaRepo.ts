@@ -97,6 +97,17 @@ async function update(mapa: IMapa): Promise<void> {
     });
 }
 
+async function addVisita(mapa: IMapa): Promise<void> {
+  mapaModel
+    .updateOne({ id: mapa.id }, { $inc: { likes: 1 } })
+    .then((res: any) => {
+      console.log(res);
+    })
+    .catch((err: any) => {
+      console.error(err);
+    });
+}
+
 /**
  * Delete one mapa.
  */
@@ -120,5 +131,6 @@ export default {
   getAll,
   add,
   update,
+  addVisita,
   delete: delete_,
 } as const;

@@ -65,6 +65,12 @@ mapaRouter.put(
   MapaRoutes.update
 );
 
+mapaRouter.put(
+  Paths.Mapas.AddVisita,
+  validate(["mapa", Mapa.isMapa]),
+  MapaRoutes.addVisita
+);
+
 // Delete one user
 userRouter.delete(
   Paths.Users.Delete,
