@@ -20,6 +20,6 @@ export default {
     Add: "/",
     Update: "/",
     Delete: "/:id",
-    AddVisita: "/visita"
+    AddVisita: "/visita/:id",
   },
 } as const;

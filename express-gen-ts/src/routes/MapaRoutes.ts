@@ -43,9 +43,9 @@ async function update(req: IReq<{ mapa: IMapa }>, res: IRes) {
   return res.status(HttpStatusCodes.OK).end();
 }
 
-async function addVisita(req: IReq<{ mapa: IMapa }>, res: IRes) {
-  const { mapa } = req.body;
-  await MapaService.addVisita(mapa);
+async function addVisita(req: IReq<{ id: number }>, res: IRes) {
+  const { id } = req.params;
+  await MapaService.addVisita(Number(id));
   return res.status(HttpStatusCodes.OK).end();
 }
 

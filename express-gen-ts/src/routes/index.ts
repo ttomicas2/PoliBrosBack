@@ -67,7 +67,7 @@ mapaRouter.put(
 
 mapaRouter.put(
   Paths.Mapas.AddVisita,
-  validate(["mapa", Mapa.isMapa]),
+  validate(["id", "number", "params"]),
   MapaRoutes.addVisita
 );
 

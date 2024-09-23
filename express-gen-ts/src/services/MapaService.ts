@@ -44,13 +44,13 @@ async function updateOne(mapa: IMapa): Promise<void> {
   return MapaRepo.update(mapa);
 }
 
-async function addVisita(mapa: IMapa): Promise<void> {
-  const persists = await MapaRepo.persists(mapa.id);
+async function addVisita(id: number): Promise<void> {
+  const persists = await MapaRepo.persists(id);
   if (!persists) {
     throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR);
   }
   // Return mapa
-  return MapaRepo.addVisita(mapa);
+  return MapaRepo.addVisita(id);
 }
 
 /**

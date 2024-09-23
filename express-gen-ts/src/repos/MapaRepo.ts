@@ -97,9 +97,9 @@ async function update(mapa: IMapa): Promise<void> {
     });
 }
 
-async function addVisita(mapa: IMapa): Promise<void> {
+async function addVisita(id: number): Promise<void> {
   mapaModel
-    .updateOne({ id: mapa.id }, { $inc: { likes: 1 } })
+    .updateOne({ id: id }, { $inc: { likes: 1 } })
     .then((res: any) => {
       console.log(res);
     })
