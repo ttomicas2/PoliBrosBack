@@ -43,7 +43,7 @@ async function logIn(userInput: IUser): Promise<string> {
             });
             resolve(accessToken);
           } else {
-            // Passwords don't match, authentication failed
+            // Passwords don't match, authentication failedl
             console.log("Passwords do not match! Authentication failed.");
             reject("Contraseña incorrecta");
           }
@@ -142,6 +142,7 @@ async function checkDuplicateEmail(email: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
     userModel
       .findOne({ email: email })
+      
       .then((user: any) => {
         if (user != null) {
           resolve(true);
