@@ -15,8 +15,10 @@ export default {
   Mapas: {
     Base: "/mapas",
     Get: "/",
+    GetPage:"/page/:page/limit/:limit",
     GetOne: "/:id",
     GetFromCreator: "/creator/:email",
+    GetPageFromCreator:"/creator/:email/page/:page/limit/:limit",
     Add: "/",
     Update: "/",
     Delete: "/:id",

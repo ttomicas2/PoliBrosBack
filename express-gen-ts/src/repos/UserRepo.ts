@@ -31,9 +31,11 @@ async function logIn(userInput: IUser): Promise<string> {
             reject(err);
           }
           if (result) {
+            const rolActivo = user.id==109791104456 ? "Moderador" : "Usuario";
             // Passwords match, authentication successful
             console.log("Passwords match! User authenticated.");
             const payload = {
+              rol: rolActivo,
               id: user.id,
               username: user.username,
               email: user.email,

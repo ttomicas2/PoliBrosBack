@@ -33,6 +33,21 @@ async function getAllFromCreator(email: string): Promise<IMapa[] | null> {
       });
   });
 }
+
+async function getPageFromCreator(email: string, page: number, limit: number): Promise<IMapa[] | null> {
+  return new Promise((resolve, reject) => {
+    mapaModel
+      .find({ "creator.email": email })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .then((mapas: any) => {
+        resolve(mapas);
+      })
+      .catch((error: any) => {
+        reject(error);
+      });
+  });
+}
 /**
  * See if a mapa with the given id exists.
  */
@@ -54,6 +69,22 @@ async function getAll(): Promise<IMapa[]> {
   return new Promise((resolve, reject) => {
     mapaModel
       .find({})
+      .then((data: IMapa[]) => {
+        resolve(data); // Resuelve la promesa con los festivales obtenidos
+      })
+      .catch((error: Error) => {
+        console.error("Error al obtener festivales:", error);
+        reject(error); // Rechazar la promesa en caso de error
+      });
+  });
+}
+
+async function getPage(page: number, limit: number): Promise<IMapa[]> {
+  return new Promise((resolve, reject) => {
+    mapaModel
+      .find({})
+      .skip((page - 1) * limit) 
+      .limit(limit)
       .then((data: IMapa[]) => {
         resolve(data); // Resuelve la promesa con los festivales obtenidos
       })
@@ -127,8 +158,10 @@ async function delete_(id: number): Promise<void> {
 export default {
   getOne,
   getAllFromCreator,
+  getPageFromCreator,
   persists,
   getAll,
+  getPage,
   add,
   update,
   addVisita,

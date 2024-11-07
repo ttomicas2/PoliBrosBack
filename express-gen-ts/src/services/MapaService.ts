@@ -17,12 +17,20 @@ function getAll(): Promise<IMapa[]> {
   return MapaRepo.getAll();
 }
 
+function getPage(page: number, limit: number): Promise<IMapa[]> {
+  return MapaRepo.getPage(page, limit);
+}
+
 function getOne(idMapa: number): Promise<IMapa | null> {
   return MapaRepo.getOne(idMapa);
 }
 
 function getAllFromCreator(emailCreator: string): Promise<IMapa[] | null> {
   return MapaRepo.getAllFromCreator(emailCreator);
+}
+
+function getPageFromCreator(emailCreator: string, page: number, limit: number): Promise<IMapa[] | null> {
+  return MapaRepo.getPageFromCreator(emailCreator, page, limit);
 }
 
 /**
@@ -69,8 +77,10 @@ async function _delete(id: number): Promise<void> {
 
 export default {
   getAll,
+  getPage,
   getOne,
   getAllFromCreator,
+  getPageFromCreator,
   addOne,
   updateOne,
   addVisita,

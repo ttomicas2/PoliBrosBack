@@ -8,6 +8,13 @@ const INVALID_CONSTRUCTOR_PARAM = 'nameOrObj arg must a string or an object ' +
 
 // **** Types **** //
 
+export enum Dificultad{
+  noTesteado,
+  facil,
+  normal,
+  dificil,
+}
+
 export interface IMapa {
   id: number;
   name: string;
@@ -16,6 +23,7 @@ export interface IMapa {
   likes: number;
   creator: IUser;
   categoria: string;
+  dificultad: Dificultad;
 }
 
 
@@ -31,6 +39,7 @@ function new_(
   likes?: number,
   creator?: IUser,
   categoria?: string,
+  dificultad?: Dificultad,
   id?: number, // id last cause usually set by db
 ): IMapa {
   return {
@@ -41,6 +50,7 @@ function new_(
     creator: (creator ?? {id: -1, username: '', email: '', password: ''}),
     valores: (valores ?? ''),
     categoria: (categoria ?? ''),
+    dificultad: (dificultad ?? Dificultad.noTesteado),
   };
 }
 
@@ -52,7 +62,7 @@ function from(param: object): IMapa {
     throw new Error(INVALID_CONSTRUCTOR_PARAM);
   }
   const p = param as IMapa;
-  return new_(p.name, p.valores,p.photo,p.likes, p.creator, p.categoria, p.id);
+  return new_(p.name, p.valores,p.photo,p.likes, p.creator, p.categoria, p.dificultad, p.id);
 }
 
 /**

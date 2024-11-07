@@ -14,6 +14,12 @@ async function getAll(_: IReq, res: IRes) {
   return res.status(HttpStatusCodes.OK).json(mapas);
 }
 
+async function getPage(req: IReq<{ page: number, limit:number }>, res: IRes) {
+  const { page, limit } = req.params;
+  const mapas = await MapaService.getPage(Number(page), Number(limit));
+  return res.status(HttpStatusCodes.OK).json(mapas);
+}
+
 async function getOne(req: IReq<{ id: string }>, res: IRes) {
   const { id } = req.params;
   const mapas = await MapaService.getOne(Number(id));
@@ -23,6 +29,12 @@ async function getOne(req: IReq<{ id: string }>, res: IRes) {
 async function getAllFromCreator(req: IReq<{ email: string }>, res: IRes) {
   const { email } = req.params;
   const mapas = await MapaService.getAllFromCreator(email);
+  return res.status(HttpStatusCodes.OK).json(mapas);
+}
+
+async function getPageFromCreator(req: IReq<{ email: string, page: number, limit:number }>, res: IRes) {
+  const { email, page, limit} = req.params;
+  const mapas = await MapaService.getPageFromCreator(email, Number(page), Number(limit));
   return res.status(HttpStatusCodes.OK).json(mapas);
 }
 /**
@@ -62,8 +74,10 @@ async function delete_(req: IReq, res: IRes) {
 
 export default {
   getAll,
+  getPage,
   getOne,
   getAllFromCreator,
+  getPageFromCreator,
   add,
   update,
   addVisita,
