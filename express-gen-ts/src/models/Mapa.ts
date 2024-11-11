@@ -24,6 +24,7 @@ export interface IMapa {
   creator: IUser;
   categoria: string;
   dificultad: Dificultad;
+  intentos: number[];
 }
 
 
@@ -40,6 +41,7 @@ function new_(
   creator?: IUser,
   categoria?: string,
   dificultad?: Dificultad,
+  intentos?: number[],
   id?: number, // id last cause usually set by db
 ): IMapa {
   return {
@@ -51,6 +53,7 @@ function new_(
     valores: (valores ?? ''),
     categoria: (categoria ?? ''),
     dificultad: (dificultad ?? Dificultad.noTesteado),
+    intentos: (intentos ?? []),
   };
 }
 
@@ -62,7 +65,7 @@ function from(param: object): IMapa {
     throw new Error(INVALID_CONSTRUCTOR_PARAM);
   }
   const p = param as IMapa;
-  return new_(p.name, p.valores,p.photo,p.likes, p.creator, p.categoria, p.dificultad, p.id);
+  return new_(p.name, p.valores,p.photo,p.likes, p.creator, p.categoria, p.dificultad, p.intentos, p.id);
 }
 
 /**
@@ -78,7 +81,7 @@ function isMapa(arg: unknown): boolean {
     'likes' in arg && typeof arg.likes === 'number' &&
     'creator' in arg && user.isUser(arg.creator) &&
     'valores' in arg && typeof arg.valores === 'string'
-  );
+  );  
 }
 
 

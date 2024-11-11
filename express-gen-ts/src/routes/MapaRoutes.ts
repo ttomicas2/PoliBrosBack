@@ -26,7 +26,7 @@ async function getOne(req: IReq<{ id: string }>, res: IRes) {
   return res.status(HttpStatusCodes.OK).json(mapas);
 }
 
-async function getAllFromCreator(req: IReq<{ email: string }>, res: IRes) {
+async function getAllFromCreator(req: IReq<{ email: string }>, res: IRes) { // deprecated
   const { email } = req.params;
   const mapas = await MapaService.getAllFromCreator(email);
   return res.status(HttpStatusCodes.OK).json(mapas);
@@ -49,9 +49,10 @@ async function add(req: IReq<{ mapa: IMapa }>, res: IRes) {
 /**
  * Update one mapa.
  */
-async function update(req: IReq<{ mapa: IMapa }>, res: IRes) {
+async function update(req: any, res: IRes) {
   const { mapa } = req.body;
-  await MapaService.updateOne(mapa);
+  const userId  = +req.userId;
+  await MapaService.updateOne(mapa, userId);
   return res.status(HttpStatusCodes.OK).end();
 }
 
@@ -61,12 +62,20 @@ async function addVisita(req: IReq<{ id: number }>, res: IRes) {
   return res.status(HttpStatusCodes.OK).end();
 }
 
+async function addMuerte(req: IReq<{ id: number, muertes: number }>, res: IRes) {
+  const { id } = req.params;
+  const { muertes }= req.body;
+  await MapaService.addMuerte(Number(id), muertes);
+  return res.status(HttpStatusCodes.OK).end();
+}
+
 /**
  * Delete one mapa.
  */
-async function delete_(req: IReq, res: IRes) {
+async function delete_(req: any, res: IRes) {
   const id = +req.params.id;
-  await MapaService.delete(id);
+  const userId =+req.userId;
+  await MapaService.delete(id, Number(userId));
   return res.status(HttpStatusCodes.OK).end();
 }
 
@@ -81,5 +90,6 @@ export default {
   add,
   update,
   addVisita,
+  addMuerte,
   delete: delete_,
 } as const;

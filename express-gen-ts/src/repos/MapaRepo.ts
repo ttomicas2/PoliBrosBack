@@ -1,6 +1,7 @@
 import { IMapa } from "@src/models/Mapa";
 import { getRandomInt } from "@src/util/misc";
 import { mapaModel } from "./mongoose";
+import { isModerador } from "./UserRepo";
 
 // **** Functions **** //
 
@@ -117,13 +118,20 @@ async function add(mapa: IMapa): Promise<number> {
 /**
  * Update a mapa.
  */
-async function update(mapa: IMapa): Promise<void> {
+async function update(mapa: IMapa, idUserToken: number): Promise<void> {
   mapaModel
-    .replaceOne({ id: mapa.id }, mapa)
-    .then((res: any) => {
-      console.log(res);
-    })
-    .catch((err: any) => {
+  .findOne({ id: mapa.id })
+  .then(async (mapa: any) => {
+    if(mapa.creator.id === idUserToken || await isModerador(idUserToken)){
+      mapaModel
+      .replaceOne({ id: mapa.id }, mapa)
+      .then((res: any) => {
+        console.log(res);
+      }).catch((err: any) => {
+        console.error(err);
+      });
+    }
+    }).catch((err: any) => {
       console.error(err);
     });
 }
@@ -139,14 +147,36 @@ async function addVisita(id: number): Promise<void> {
     });
 }
 
+async function addMuerte(id: number, muertes: number): Promise<void> {
+  mapaModel
+    .updateOne({ id: id }, { $push: { intentos: muertes } })
+    .then((res: any) => {
+      console.log(res);
+    })
+    .catch((err: any) => {
+      console.error(err);
+    });
+}
+
 /**
  * Delete one mapa.
  */
-async function delete_(id: number): Promise<void> {
+async function delete_(id: number, idUserToken: number): Promise<void> {
   mapaModel
-    .deleteOne({ id: id })
-    .then((res: any) => {
-      console.log(res);
+    .findOne({ id: id })
+    .then(async (mapa: any) => {
+      if(mapa.creator.id === idUserToken || await isModerador(idUserToken)){
+        mapaModel
+        .deleteOne({ id: id })
+        .then((res: any) => {
+          console.log(res);
+        })
+        .catch((err: any) => {
+          console.error(err);
+        });
+      }else{
+        console.log("No es el dueño del mapa");
+      }
     })
     .catch((err: any) => {
       console.error(err);
@@ -165,5 +195,6 @@ export default {
   add,
   update,
   addVisita,
+  addMuerte,
   delete: delete_,
 } as const;

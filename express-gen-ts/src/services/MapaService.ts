@@ -43,13 +43,13 @@ function addOne(mapa: IMapa): Promise<number> {
 /**
  * Update one mapa.
  */
-async function updateOne(mapa: IMapa): Promise<void> {
+async function updateOne(mapa: IMapa, userId: number): Promise<void> {
   const persists = await MapaRepo.persists(mapa.id);
   if (!persists) {
     throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR);
   }
   // Return mapa
-  return MapaRepo.update(mapa);
+  return MapaRepo.update(mapa, userId);
 }
 
 async function addVisita(id: number): Promise<void> {
@@ -61,16 +61,25 @@ async function addVisita(id: number): Promise<void> {
   return MapaRepo.addVisita(id);
 }
 
+async function addMuerte(id: number, muertes: number): Promise<void> {
+  const persists = await MapaRepo.persists(id);
+  if (!persists) {
+    throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR);
+  }
+  // Return mapa
+  return MapaRepo.addMuerte(id, muertes);
+}
+
 /**
  * Delete a mapa by their id.
  */
-async function _delete(id: number): Promise<void> {
+async function _delete(id: number, userId: number): Promise<void> {
   const persists = await MapaRepo.persists(id);
   if (!persists) {
     throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR);
   }
   // Delete mapa
-  return MapaRepo.delete(id);
+  return MapaRepo.delete(id, userId);
 }
 
 // **** Export default **** //
@@ -84,5 +93,6 @@ export default {
   addOne,
   updateOne,
   addVisita,
+  addMuerte,
   delete: _delete,
 } as const;

@@ -1,6 +1,6 @@
 import { IUser } from "@src/models/User";
 import { getRandomInt } from "@src/util/misc";
-import { mapaModel, userModel } from "./mongoose";
+import { mapaModel, moderadorModel, userModel } from "./mongoose";
 import bcrypt from "bcrypt";
 
 import jwt from "jsonwebtoken";
@@ -25,14 +25,19 @@ async function logIn(userInput: IUser): Promise<string> {
       bcrypt.compare(
         userInput.password,
         user?.password,
-        (err: Error | undefined, result: boolean) => {
+        async (err: Error | undefined, result: boolean) => {
           if (err) {
             console.error("Error al obtener usuario:", err);
             reject(err);
           }
           if (result) {
-            const rolActivo = user.id==109791104456 ? "Moderador" : "Usuario";
             // Passwords match, authentication successful
+            let rolActivo: string;
+            if(await isModerador(user.id)){
+              rolActivo = "Moderador";
+            }else{
+              rolActivo = "Usuario";
+            }
             console.log("Passwords match! User authenticated.");
             const payload = {
               rol: rolActivo,
@@ -41,7 +46,7 @@ async function logIn(userInput: IUser): Promise<string> {
               email: user.email,
             };
             const accessToken = jwt.sign(payload, EnvVars.Jwt.Secret, {
-              expiresIn: "1h",
+              expiresIn: "10h",
             });
             resolve(accessToken);
           } else {
@@ -84,6 +89,15 @@ async function persists(id: number): Promise<boolean> {
       reject(false);
     }
   });
+}
+
+export async function isModerador(id: number): Promise<boolean> {
+  const exists = await moderadorModel.exists({ id: id });
+    if (exists != null) {
+      return true
+    } else {
+      return false;
+    }
 }
 
 /**

@@ -4,7 +4,7 @@ import { IUser } from "@src/models/User";
 
 import Mongoose, { Connection, Model, Schema } from "mongoose";
 import { Console } from "console";
-import { IMapa } from "@src/models/Mapa";
+import { Dificultad, IMapa } from "@src/models/Mapa";
 
 // **** Variables **** //
 
@@ -34,6 +34,8 @@ const mapaSchema: Schema = new Mongoose.Schema(
       password: { type: String, required: true },
     },
     categoria: { type: String, required: true },
+    dificultad: { type: Number, required: true},
+    intentos: { type: [Number], required: true},
   },
   { collection: "mapas", versionKey: false }
 );
@@ -49,3 +51,4 @@ const db: Connection = Mongoose.createConnection(
 
 export const userModel = db.model<IUser>("Users", userSchema);
 export const mapaModel = db.model<IMapa>("Mapas", mapaSchema);
+export const moderadorModel = db.model<IUser>("Moderadores", userSchema);

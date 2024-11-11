@@ -79,6 +79,12 @@ mapaRouter.put(
   MapaRoutes.addVisita
 );
 
+mapaRouter.post(
+  Paths.Mapas.AddMuertes,
+  validate(["id", "number", "params"]), 
+  MapaRoutes.addMuerte
+);
+
 // Delete one user
 userRouter.delete(
   Paths.Users.Delete,
