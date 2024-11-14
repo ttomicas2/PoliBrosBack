@@ -1,4 +1,4 @@
-import { IMapa } from "@src/models/Mapa";
+import { Dificultad, IMapa } from "@src/models/Mapa";
 import { getRandomInt } from "@src/util/misc";
 import { mapaModel } from "./mongoose";
 import { isModerador } from "./UserRepo";
@@ -150,12 +150,48 @@ async function addVisita(id: number): Promise<void> {
 async function addMuerte(id: number, muertes: number): Promise<void> {
   mapaModel
     .updateOne({ id: id }, { $push: { intentos: muertes } })
-    .then((res: any) => {
-      console.log(res);
+    .then(async (res: any) => {
+      try {
+        const mapa = await mapaModel.findOne({id : id});
+        // Actualizar el mapa por su id
+        if(mapa === null){
+          return;
+        }
+        const nuevaDificultad = calcularDificultad(mapa);
+        const mapaActualizado = await mapaModel.findOneAndUpdate(
+          { id: id },  // Buscar por el id del mapa
+          { dificultad: nuevaDificultad },  // Actualizar la dificultad
+          { new: true }  // Devuelve el documento actualizado
+        );
+    
+        if (!mapaActualizado) {
+          throw new Error('Mapa no encontrado');
+        }
+    
+        console.log('Dificultad actualizado:', mapaActualizado.dificultad);
+      } catch (error) {
+        console.error('Error al cambiar la dificultad del mapa:', error);
+      }
     })
     .catch((err: any) => {
       console.error(err);
     });
+}
+
+function calcularDificultad(mapa: IMapa) : Dificultad{
+  let total = 0;
+  for(let i of mapa.intentos) total+=i;
+  const promedio = total/mapa.intentos.length;
+  if(mapa.intentos.length === 0){
+    return Dificultad.noTesteado
+  }
+  if(promedio <= 2){
+    return Dificultad.facil;
+  }else if(promedio <= 10) {
+    return  Dificultad.normal;
+  }else{
+    return Dificultad.dificil;
+  }
 }
 
 /**
