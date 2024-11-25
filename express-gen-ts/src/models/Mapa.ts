@@ -57,9 +57,6 @@ function new_(
   };
 }
 
-/**
- * Get user instance from object.
- */
 function from(param: object): IMapa {
   if (!isMapa(param)) {
     throw new Error(INVALID_CONSTRUCTOR_PARAM);
