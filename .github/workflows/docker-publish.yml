@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}  # Este es el nombre del repositorio, en formato <owner>/<repo>
+  IMAGE_NAME: ${{ github.repository }}  
 
 jobs:
   build:
