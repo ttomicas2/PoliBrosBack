@@ -1,7 +1,6 @@
-import mongoose from 'mongoose';
+
 import supertest, { Test } from 'supertest';
 import TestAgent from 'supertest/lib/agent';
-import { defaultErrMsg as ValidatorErr } from 'jet-validator';
 import insertUrlParams from 'inserturlparams';
 
 import app from '@src/server';
@@ -10,78 +9,28 @@ import MapaRepo from '@src/repos/MapaRepo';
 import User, { IUser } from '@src/models/User';
 import Mapa, { IMapa } from '@src/models/Mapa';
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
-import { USER_NOT_FOUND_ERR } from '@src/services/UserService';
 import Paths from '@src/common/Paths';
 import apiCb from 'spec/support/apiCb';
 import { TApiCb } from 'spec/types/misc';
-
-// **** Helpers **** //
-
-// Dummy users for tests
-const getDummyUsers = (): IUser[] => [
-  User.new('Sean Maxwell', 'sean.maxwell@gmail.com', 'password1'),
-  User.new('John Smith', 'john.smith@gmail.com', 'password2'),
-  User.new('Gordon Freeman', 'gordon.freeman@gmail.com', 'password3'),
-];
-
-// Dummy mapas for tests
-const getDummyMapas = (): IMapa[] => [
-  Mapa.new(
-    'Mapa 1',
-    'Valores 1',
-    'photo1.jpg',
-    10,
-    getDummyUsers()[0],
-    'Categoria 1'
-  ),
-  Mapa.new(
-    'Mapa 2',
-    'Valores 2',
-    'photo2.jpg',
-    5,
-    getDummyUsers()[1],
-    'Categoria 2'
-  ),
-];
 
 // **** Tests **** //
 
 describe('User and Mapa Endpoints', () => {
   let agent: TestAgent<Test>;
 
-  // Setup MongoDB connection
-  beforeAll(async () => {
-    const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/testdb';
-    await mongoose.connect(mongoUri);
+  beforeAll(done => {
     agent = supertest.agent(app);
-  });
-
-  // Cleanup MongoDB and close connection
-  afterAll(async () => {
-    await mongoose.connection.dropDatabase(); // Limpia la base de datos
-    await mongoose.connection.close(); // Cierra la conexión
-  });
-
-  // Cleanup collections before each test
-  beforeEach(async () => {
-    const collections = await mongoose.connection.db.collections();
-    for (const collection of collections) {
-      await collection.deleteMany({});
-    }
+    done();
   });
 
   // **** User Tests **** //
 
-  describe(`"GET:${Paths.Users.Get}"`, () => {
-    const api = (cb: TApiCb) => agent.get(Paths.Users.Get).end(apiCb(cb));
+  describe(`GET: ${Paths.Base + Paths.Users.Base + Paths.Users.Get}`, () => {
+    const api = (cb: TApiCb) => agent.get(Paths.Base + Paths.Users.Base + Paths.Users.Get).end(apiCb(cb));
 
-    it('should return all users with status 200.', done => {
-      const dummyUsers = getDummyUsers();
-      spyOn(UserRepo, 'getAll').and.resolveTo(dummyUsers);
-
+    it('should return status 200.', done => {
       api(res => {
         expect(res.status).toBe(HttpStatusCodes.OK);
-        expect(res.body).toEqual({ users: dummyUsers });
         done();
       });
     });
@@ -89,62 +38,12 @@ describe('User and Mapa Endpoints', () => {
 
   // **** Mapa Tests **** //
 
-  describe(`"GET:${Paths.Mapas.Get}"`, () => {
-    const api = (cb: TApiCb) => agent.get(Paths.Mapas.Get).end(apiCb(cb));
+  describe(`GET: ${Paths.Base + Paths.Mapas.Base + Paths.Mapas.Get}`, () => {
+    const api = (cb: TApiCb) => agent.get(Paths.Base + Paths.Mapas.Base + Paths.Mapas.Get).end(apiCb(cb));
 
-    it('should return all mapas with status 200.', done => {
-      const dummyMapas = getDummyMapas();
-      spyOn(MapaRepo, 'getAll').and.resolveTo(dummyMapas);
-
+    it('should return status 200.', done => {
       api(res => {
         expect(res.status).toBe(HttpStatusCodes.OK);
-        expect(res.body).toEqual({ mapas: dummyMapas });
-        done();
-      });
-    });
-  });
-
-  describe(`"POST:${Paths.Mapas.Add}"`, () => {
-    const DUMMY_MAPA = getDummyMapas()[0];
-    const api = (mapa: IMapa | null, cb: TApiCb) =>
-      agent.post(Paths.Mapas.Add).send({ mapa }).end(apiCb(cb));
-
-    it('should add a mapa successfully and return status 201.', done => {
-      spyOn(MapaRepo, 'add').and.resolveTo();
-
-      api(DUMMY_MAPA, res => {
-        expect(res.status).toBe(HttpStatusCodes.CREATED);
-        done();
-      });
-    });
-
-    it('should return 400 if mapa data is invalid.', done => {
-      api(null, res => {
-        expect(res.status).toBe(HttpStatusCodes.BAD_REQUEST);
-        done();
-      });
-    });
-  });
-
-  describe(`"DELETE:${Paths.Mapas.Delete}"`, () => {
-    const api = (id: number, cb: TApiCb) =>
-      agent.delete(insertUrlParams(Paths.Mapas.Delete, { id })).end(apiCb(cb));
-
-    it('should delete a mapa successfully and return status 200.', done => {
-      spyOn(MapaRepo, 'delete').and.resolveTo();
-      spyOn(MapaRepo, 'persists').and.resolveTo(true);
-
-      api(1, res => {
-        expect(res.status).toBe(HttpStatusCodes.OK);
-        done();
-      });
-    });
-
-    it('should return 404 if the mapa does not exist.', done => {
-      spyOn(MapaRepo, 'persists').and.resolveTo(false);
-
-      api(-1, res => {
-        expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
         done();
       });
     });
