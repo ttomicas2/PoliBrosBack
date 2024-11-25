@@ -1,13 +1,11 @@
-name: Docker CI/CD Pipeline
+name: Docker
 
 on:
   pull_request:
     branches: [ "main", "QA", "Dev" ]
 
 env:
-  # Define el registro (por defecto ghcr.io)
   REGISTRY: ghcr.io
-  # El nombre de la imagen será <usuario>/<repo>
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
@@ -22,18 +20,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Instala la herramienta Cosign para firmar las imágenes (excepto en PRs)
       - name: Install cosign
         if: github.event_name != 'pull_request'
         uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 #v3.5.0
         with:
           cosign-release: 'v2.2.4'
 
-      # Configura Docker Buildx para construir imágenes multi-plataforma
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
 
-      # Login al registro de Docker (excepto en PRs)
       - name: Log into registry ${{ env.REGISTRY }}
         if: github.event_name != 'pull_request'
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
@@ -42,34 +37,31 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Extrae los metadatos de la imagen (tags, labels)
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      # Construcción y subida de la imagen Docker (sin usar caché)
+      # Construcción y push de la imagen (en minúsculas)
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
           context: ./my-app
           push: ${{ github.event_name != 'pull_request' }}
+          # Convertir las etiquetas a minúsculas
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.event.head_commit.timestamp }}
+            ${{ env.REGISTRY }}/${{ github.repository }}:latest
+            ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.event.head_commit.timestamp }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=none
           cache-to: type=none
 
-      # Verificación de las imágenes en el registro para depuración
-      - name: Debug List Docker images
-        run: |
-          curl -u "${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}" https://ghcr.io/v2/${{ github.repository }}/tags/list
+      - name: Debug: List Docker images (local)
+        run: docker images
 
-      # Firma de la imagen Docker (excepto en PRs)
       - name: Sign the published Docker image
         if: ${{ github.event_name != 'pull_request' }}
         env:
