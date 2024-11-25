@@ -20,6 +20,7 @@ COPY --from=build /app/dist ./dist
 
 ENV PORT=3000
 ENV HOST=0.0.0.0
+ARG NODE_ENV=production
 ENV NODE_ENV=production
 ENV JET_LOGGER_MODE=CONSOLE
 ENV JET_LOGGER_FILEPATH=jet-logger.log
