@@ -11,7 +11,7 @@ Run the server in development mode.
 
 ### `npm test`
 
-Run all unit-tests with not-reloading.
+Run all unit-tests with hot-reloading.
 
 ### `npm test -- --testFile="name of test file" (i.e. --testFile=Users).`
 
