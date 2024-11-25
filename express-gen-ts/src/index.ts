@@ -14,7 +14,7 @@ interface IArgs {
 const args = parse<IArgs>({
   env: {
     type: String,
-    defaultValue: "development",
+    defaultValue: process.env.NODE_ENV || "development",
     alias: "e",
   },
 });
