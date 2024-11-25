@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import supertest, { Test } from 'supertest';
 import TestAgent from 'supertest/lib/agent';
 import { defaultErrMsg as ValidatorErr } from 'jet-validator';
@@ -48,10 +49,25 @@ const getDummyMapas = (): IMapa[] => [
 describe('User and Mapa Endpoints', () => {
   let agent: TestAgent<Test>;
 
-  // Setup agent
-  beforeAll(done => {
+  // Setup MongoDB connection
+  beforeAll(async () => {
+    const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/testdb';
+    await mongoose.connect(mongoUri);
     agent = supertest.agent(app);
-    done();
+  });
+
+  // Cleanup MongoDB and close connection
+  afterAll(async () => {
+    await mongoose.connection.dropDatabase(); // Limpia la base de datos
+    await mongoose.connection.close(); // Cierra la conexión
+  });
+
+  // Cleanup collections before each test
+  beforeEach(async () => {
+    const collections = await mongoose.connection.db.collections();
+    for (const collection of collections) {
+      await collection.deleteMany({});
+    }
   });
 
   // **** User Tests **** //
