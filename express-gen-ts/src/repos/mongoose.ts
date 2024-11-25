@@ -44,7 +44,7 @@ const mapaSchema: Schema = new Mongoose.Schema(
  * Fetch the json from the file.
  */
 const db: Connection = Mongoose.createConnection(
-  "mongodb://127.0.0.1:27017/PoliBros"
+  "mongodb://0.0.0.0:27017/PoliBros"
 );
 
 export const userModel = db.model<IUser>("Users", userSchema);
