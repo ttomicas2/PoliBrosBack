@@ -76,10 +76,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Debug List Docker images
-        run: |
-          curl -u "${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}" https://ghcr.io/v2/${{ github.repository }}/tags/list
-
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
       # repository is public to avoid leaking data.  If you would like to publish
