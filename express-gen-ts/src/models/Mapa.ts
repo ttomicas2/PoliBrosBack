@@ -31,7 +31,7 @@ export interface IMapa {
 // **** Functions **** //
 
 /**
- * Create new User.
+ * Create new Mapa.
  */
 function new_(
   name?: string,
