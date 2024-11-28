@@ -93,6 +93,7 @@ async function persists(id: number): Promise<boolean> {
 
 export async function isModerador(id: number): Promise<boolean> {
   const exists = await moderadorModel.exists({ id: id });
+  console.log("Moderador?: " + exists?._id);
     if (exists != null) {
       return true
     } else {

@@ -20,6 +20,16 @@ const userSchema: Schema = new Mongoose.Schema(
   { collection: "usuarios", versionKey: false }
 );
 
+const moderadorSchema: Schema = new Mongoose.Schema(
+  {
+    id: { type: Number, required: true },
+    username: { type: String, required: true },
+    email: { type: String, required: true },
+    password: { type: String, required: true },
+  },
+  { collection: "moderadores", versionKey: false }
+);
+
 const mapaSchema: Schema = new Mongoose.Schema(
   {
     id: { type: Number, required: true },
@@ -51,4 +61,4 @@ const db: Connection = Mongoose.createConnection(
 
 export const userModel = db.model<IUser>("Users", userSchema);
 export const mapaModel = db.model<IMapa>("Mapas", mapaSchema);
-export const moderadorModel = db.model<IUser>("Moderadores", userSchema);
+export const moderadorModel = db.model<IUser>("Moderadores", moderadorSchema);
